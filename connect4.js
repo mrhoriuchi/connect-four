@@ -129,6 +129,7 @@ function handleClick(evt) {
   // }
   // Ternary operator works just the same and is cleaner
   currPlayer = currPlayer === 1 ? 2 : 1;
+  changePlayerText();
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -187,5 +188,18 @@ function checkForWin() {
   }
 }
 
+// I wrote this function so that we will know whose turn it is when playing
+function changePlayerText(){
+  const whoseTurn = document.getElementById('whoseTurn');
+  if(currPlayer===1){
+    whoseTurn.innerText = "It is currently Player 1's turn";
+    whoseTurn.style.color = 'red';
+  } else{
+    whoseTurn.innerText = "It is currently Player 2's turn";
+    whoseTurn.style.color = 'blue';
+  }
+}
+
 makeBoard();
 makeHtmlBoard();
+changePlayerText();
