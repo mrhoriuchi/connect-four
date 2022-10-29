@@ -9,13 +9,13 @@ const WIDTH = 7;
 const HEIGHT = 6;
 
 let currPlayer = 1; // active player: 1 or 2
-const board = []; // array of rows, each row is array of cells  (board[y][x])
+let board = []; // array of rows, each row is array of cells  (board[y][x])
 
 /** makeBoard: create in-JS board structure:
  *    board = array of rows, each row is array of cells  (board[y][x])
  */
 
-function makeBoard() {
+const makeBoard = () => {
   // TODO: set "board" to empty HEIGHT x WIDTH matrix array -DONE!
   for (let i = 0; i < HEIGHT; i++) {
     board.push(Array.from({ length: WIDTH }));
@@ -24,7 +24,7 @@ function makeBoard() {
 
 /** makeHtmlBoard: make HTML table and row of column tops. */
 
-function makeHtmlBoard() {
+const makeHtmlBoard = () => {
   // TODO: get "htmlBoard" variable from the item in HTML w/ID of "board" -DONE!
   const htmlBoard = document.getElementById("board");
 
@@ -56,11 +56,13 @@ function makeHtmlBoard() {
     }
     htmlBoard.append(row);
   }
+
+  changePlayerText();
 }
 
 /** findSpotForCol: given column x, return top empty y (null if filled) */
 
-function findSpotForCol(x) {
+const findSpotForCol = (x) => {
   // TODO: write the real version of this, rather than always returning 0
   for (let y = HEIGHT - 1; y >= 0; y--) {
     if (!board[y][x]) {
@@ -72,26 +74,25 @@ function findSpotForCol(x) {
 
 /** placeInTable: update DOM to place piece into HTML table of board */
 
-function placeInTable(y, x) {
+const placeInTable = (y, x) => {
   // TODO: make a div and insert into correct table cell
   const piece = document.createElement("div");
   piece.classList.add("piece");
   piece.classList.add(`player${currPlayer}`);
-
   const place = document.getElementById(`${y}-${x}`);
   place.append(piece);
 }
 
 /** endGame: announce game end */
 
-function endGame(msg) {
+const endGame = (msg) => {
   // TODO: pop up alert message
   alert(msg);
 }
 
 /** handleClick: handle click of column top to play piece */
 
-function handleClick(evt) {
+const handleClick = (evt) => {
   // get x from ID of clicked cell
   // changed the var x to const x
   const x = +evt.target.id;
@@ -108,34 +109,32 @@ function handleClick(evt) {
   board[y][x] = currPlayer;
   placeInTable(y, x);
 
+  const whoseTurn = document.getElementById('whoseTurn');
   // check for win
   if (checkForWin()) {
     const top = document.querySelector("tr");
     top.removeEventListener("click", handleClick);
+    whoseTurn.innerText = `Player ${currPlayer} won!!!`
+    whoseTurn.style.color = currPlayer === 1 ? 'red' : 'blue';
     return endGame(`Player ${currPlayer} won!`);
   }
 
   // check for tie
   // TODO: check if all cells in board are filled; if so call, call endGame
   if (board.every((row) => row.every((cell) => cell))) {
+    whoseTurn.innerText = `The Game Ends in a Tie!`
+    whoseTurn.style.color = 'black';
     return endGame(`Tie!`);
   }
-  // switch players
-  // TODO: switch currPlayer 1 <-> 2 -DONE!
-  // if(currPlayer === 1){
-  //   currPlayer = 2;
-  // } else{
-  //   currPlayer = 1;
-  // }
-  // Ternary operator works just the same and is cleaner
+  
   currPlayer = currPlayer === 1 ? 2 : 1;
   changePlayerText();
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
-function checkForWin() {
-  function _win(cells) {
+const checkForWin = () => {
+  const _win = (cells) => {
     // Check four cells to see if they're all color of current player
     //  - cells: list of four (y, x) cells
     //  - returns true if all are legal coordinates & all match currPlayer
@@ -151,9 +150,9 @@ function checkForWin() {
   }
 
   // TODO: read and understand this code. Add comments to help you.
-  // Changed the vars in the for loops to lets
   for (let y = 0; y < HEIGHT; y++) {
     for (let x = 0; x < WIDTH; x++) {
+      // Changed the vars in the for loops to lets
       // Below gives the win scenarios for the game, checking if any of the cases are true for the current player
       // Changed the vars below to consts
       const horiz = [
@@ -188,8 +187,8 @@ function checkForWin() {
   }
 }
 
-// I wrote this function so that we will know whose turn it is when playing
-function changePlayerText(){
+const changePlayerText = () => {
+  // I wrote this function so that we will know whose turn it is when playing
   const whoseTurn = document.getElementById('whoseTurn');
   if(currPlayer===1){
     whoseTurn.innerText = "It is currently Player 1's turn";
@@ -200,6 +199,22 @@ function changePlayerText(){
   }
 }
 
+const clearBoard = () => {
+  // This function will clear the board
+  const htmlBoard = document.getElementById("board");
+  while(htmlBoard.firstChild){
+    htmlBoard.removeChild(htmlBoard.firstChild);
+  }
+  board = [];
+  currPlayer = 1;
+}
+
+const resetButton = document.getElementById("reset");
+resetButton.addEventListener("click", () =>{
+  clearBoard();
+  makeBoard();
+  makeHtmlBoard();
+})
+
 makeBoard();
 makeHtmlBoard();
-changePlayerText();
