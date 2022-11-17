@@ -108,6 +108,13 @@ const handleClick = (evt) => {
   // TODO: add line to update in-memory board -DONE!
   board[y][x] = currPlayer;
   placeInTable(y, x);
+  document.body.append(
+    Object.assign(document.createElement("style"), {
+      textContent: `@keyframes place { 0% { transform: translateY(${
+        -350 + (5 - y) * 50
+      }px) } 100% { transform: translateY(0px)}`,
+    })
+  );
 
   const whoseTurn = document.getElementById('whoseTurn');
   // check for win
